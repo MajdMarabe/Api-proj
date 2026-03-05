@@ -21,7 +21,7 @@ namespace KASHOP.BLL.Service
         }
         public async Task< List<CategoryResponse>> GetAll()
         {
-            var categories=await _CategoryRepository.GetAllAsync();
+            var categories=await _CategoryRepository.GetAllAsync(new string[] {nameof(Category.Translations)});
             return categories.Adapt<List<CategoryResponse>>();
         }
         public async Task<CategoryResponse> Create(CategoryRequest request)
