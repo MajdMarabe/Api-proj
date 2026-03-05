@@ -1,0 +1,35 @@
+﻿using KASHOP.DAL.dto.request;
+using KASHOP.DAL.dto.response;
+using KASHOP.DAL.Models;
+using KASHOP.DAL.Repository;
+using Mapster;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace KASHOP.BLL.Service
+{
+    public class CategoryService : ICategoryService
+    {
+        private readonly ICategoryRepository _CategoryRepository;
+        public CategoryService(ICategoryRepository CategoryRepository)
+        {
+            _CategoryRepository = CategoryRepository;
+
+        }
+        public async Task< List<CategoryResponse>> GetAll()
+        {
+            var categories=await _CategoryRepository.GetAllAsync();
+            return categories.Adapt<List<CategoryResponse>>();
+        }
+        public async Task<CategoryResponse> Create(CategoryRequest request)
+        {
+            var category = request.Adapt<Category>();
+           await _CategoryRepository.CreateAsync(category);
+            return category.Adapt<CategoryResponse>();
+        }
+
+    }
+}

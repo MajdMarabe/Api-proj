@@ -1,7 +1,9 @@
-﻿using KASHOP.DAL.Data;
+﻿using KASHOP.BLL.Service;
+using KASHOP.DAL.Data;
 using KASHOP.DAL.dto.request;
 using KASHOP.DAL.dto.response;
 using KASHOP.DAL.Models;
+using KASHOP.DAL.Repository;
 using KASHOP.PL.Resources;
 using Mapster;
 using Microsoft.AspNetCore.Http;
@@ -16,23 +18,21 @@ namespace KASHOP.PL.Controllers
     public class CategoriesController : ControllerBase
     {
 
-        private readonly ApplicationDbContext _context;
+        private readonly ICategoryService _CategoryService;
         private readonly IStringLocalizer<SharedResources> _localizer;
 
-        public CategoriesController(ApplicationDbContext context, IStringLocalizer<SharedResources> localizer)
+        public CategoriesController(ICategoryService CategoryService, IStringLocalizer<SharedResources> localizer)
         {
 
-            _context = context;
+            _CategoryService = CategoryService;
             _localizer = localizer;
 
         }
 
         [HttpPost("")]
-        public IActionResult Create(CategoryRequest request)//list of translations
+        public async Task< IActionResult> Create(CategoryRequest request)//list of translations
         {
-            var category = request.Adapt<Category>();
-            _context.Add(category);
-            _context.SaveChanges();
+          await  _CategoryService.Create(request);
             return Ok(new
             {
                 message = _localizer["Success"].Value
@@ -41,14 +41,13 @@ namespace KASHOP.PL.Controllers
 
         }
         [HttpGet("")]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var categories = _context.categories.Include(c => c.Translations).ToList();
-            var response = categories.Adapt<List<CategoryResponse>>();
+            var categories = await _CategoryService.GetAll();
             return Ok(new
             {
                 message = _localizer["Success"].Value,
-                data = response
+                data = categories
 
             });
         }
