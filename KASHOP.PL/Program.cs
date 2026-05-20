@@ -32,7 +32,6 @@ namespace KASHOP.PL
 
                 );
 
-
             //lang
 
             builder.Services.AddLocalization(options => options.ResourcesPath = "");

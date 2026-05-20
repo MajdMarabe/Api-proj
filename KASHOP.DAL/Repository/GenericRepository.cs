@@ -1,9 +1,11 @@
 ﻿using KASHOP.DAL.Data;
 using KASHOP.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,6 +41,22 @@ namespace KASHOP.DAL.Repository
             await _context.SaveChangesAsync();
             return item;
         }
+        public async Task<T> GetOne(string[]? includes, Expression< Func<T,bool>> filter)
+        {
+            IQueryable<T> query = _context.Set<T>();
+
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+                return await query.FirstOrDefaultAsync(filter);
+
+        }
+
        /* public async Task<T> GetByIdAsync(int id)
         {
            return  await _context.Set<T>().FindAsync(id);

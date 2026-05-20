@@ -30,9 +30,9 @@ namespace KASHOP.PL.Controllers
         }
 
         [HttpPost("")]
-        public async Task< IActionResult> Create(CategoryRequest request)//list of translations
+        public async Task<IActionResult> Create(CategoryRequest request)//list of translations
         {
-          await  _CategoryService.Create(request);
+            await _CategoryService.Create(request);
             return Ok(new
             {
                 message = _localizer["Success"].Value
@@ -51,6 +51,12 @@ namespace KASHOP.PL.Controllers
 
             });
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            return Ok( await _CategoryService.GetCategory(c=>c.Id == id));
+        }
+
 
 
     }
