@@ -9,6 +9,7 @@ namespace KASHOP.DAL.dto.response
 {
     public class CategoryResponse
     {
+        public int Id { get; set; }
         public List<CategoryTranslationRequest> Translations { get; set; }
 
     }

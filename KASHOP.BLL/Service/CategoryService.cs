@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace KASHOP.BLL.Service
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService :ICategoryService
     {
         private readonly ICategoryRepository _CategoryRepository;
         public CategoryService(ICategoryRepository CategoryRepository)
@@ -33,9 +33,17 @@ namespace KASHOP.BLL.Service
         }
         public async Task<CategoryResponse ?> GetCategory(Expression<Func<Category,bool>> filter )
         {
-          var category= await _CategoryRepository.GetOne(new string[] { nameof(Category.Translations) },filter);
+          var category= await _CategoryRepository.GetOne(filter, new string[] { nameof(Category.Translations) });
             return category.Adapt<CategoryResponse>();
         }
 
+        public async Task<bool> DeleteCategory(int id)
+        {
+           var category =  await _CategoryRepository.GetOne(c => c.Id == id);
+            if (category == null) return false;
+            return await _CategoryRepository.DeleteAsync(category); 
+          
+
+        }
     }
 }

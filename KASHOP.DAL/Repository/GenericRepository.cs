@@ -41,7 +41,7 @@ namespace KASHOP.DAL.Repository
             await _context.SaveChangesAsync();
             return item;
         }
-        public async Task<T> GetOne(string[]? includes, Expression< Func<T,bool>> filter)
+        public async Task<T> GetOne( Expression<Func<T, bool>> filter,string[]? includes = null)
         {
             IQueryable<T> query = _context.Set<T>();
 
@@ -57,10 +57,17 @@ namespace KASHOP.DAL.Repository
 
         }
 
-       /* public async Task<T> GetByIdAsync(int id)
+        public async Task<bool> DeleteAsync(T entity)
         {
-           return  await _context.Set<T>().FindAsync(id);
+             _context.Remove(entity);
+          var affectred=  await _context.SaveChangesAsync();
+            return affectred > 0;
+        } 
 
-        }*/
+        /* public async Task<T> GetByIdAsync(int id)
+         {
+            return  await _context.Set<T>().FindAsync(id);
+
+         }*/
     }
 }
