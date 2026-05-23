@@ -12,5 +12,7 @@ namespace KASHOP.BLL.Service
     public interface IAuthenticationService
     {
         public Task<RegisterResponse> RegisterAsync(RegisterRequest request);
+        public Task<LoginResponse> LoginAsync(LoginRequest request);
+
     }
 }

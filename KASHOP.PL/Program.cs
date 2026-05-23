@@ -3,17 +3,20 @@ using KASHOP.BLL.Service;
 using KASHOP.DAL.Data;
 using KASHOP.DAL.Models;
 using KASHOP.DAL.Repository;
+using KASHOP.DAL.utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Writers;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace KASHOP.PL
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +65,8 @@ namespace KASHOP.PL
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             //////
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ISeedData, RoleSeedData>();
+
 
 
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -83,6 +88,17 @@ namespace KASHOP.PL
 
 
             app.MapControllers();
+
+            using ( var scope = app.Services.CreateScope()) { 
+                var services = scope.ServiceProvider;
+                var seeders = services.GetServices<ISeedData>();
+                foreach (var seeder in seeders)
+                {
+
+                    await seeder.SeedData();
+                }
+            
+            }
 
             app.Run();
         }
