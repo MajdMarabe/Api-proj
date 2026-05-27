@@ -32,6 +32,14 @@ namespace KASHOP.PL.Controllers
 
         }
 
+        [HttpGet ("confirmEmail")]
+         public async Task<IActionResult> ConfirmEmail()
+        {
+
+            return Ok(new { message = "ok" });
+        }
+
+
 
     }
 }
