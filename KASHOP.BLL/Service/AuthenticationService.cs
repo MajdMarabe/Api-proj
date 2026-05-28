@@ -13,7 +13,7 @@ namespace KASHOP.BLL.Service
 {
     public class AuthenticationService : IAuthenticationService
     {
-       private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
         public AuthenticationService(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
         {
@@ -23,11 +23,14 @@ namespace KASHOP.BLL.Service
 
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
-             var user =  await _userManager.FindByEmailAsync(request.Email);
-            if (user is null) return new LoginResponse() { Success = false , Message="invalid email"};
-
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user is null) return new LoginResponse() { Success = false, Message = "invalid email" };
+            /////
+            var confirmed = await _userManager.IsEmailConfirmedAsync(user);
+            if (!confirmed) return new LoginResponse() { Success = false, Message = "Please confirm your email" };
+            ////
             var result = await _userManager.CheckPasswordAsync(user, request.Password);
-            if(!result) return new LoginResponse() { Success = false , Message="invalid Password"};
+            if (!result) return new LoginResponse() { Success = false, Message = "invalid Password" };
 
             return new LoginResponse() { Success = true, Message = "succes" };
 
@@ -50,22 +53,31 @@ namespace KASHOP.BLL.Service
 
             var token =
                 await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
+            token = Uri.EscapeDataString(token);
             var url =
-                $"http://localhost:5203/api/Account/confirmEmail?email={user.Email}&token={token}";
+                $"http://localhost:5203/api/Account/confirmEmail?token={token}&id={user.Id}";
 
-            
-                await _emailSender.SendEmailAsync(
-                    user.Email,
-                    "Welcome",
-                    $"<h1>Welcome {request.UserName}</h1>" +
-                    $"<a href='{url}'>Confirm Email</a>"
-                );
+
+            await _emailSender.SendEmailAsync(
+                user.Email,
+                "Welcome",
+                $"<h1>Welcome {request.UserName}</h1>" +
+                $"<a href='{url}'>Confirm Email</a>"
+            );
             return new RegisterResponse()
             {
                 Success = true,
                 Message = "success"
             };
+        }
+        public async Task<bool> ConfirmEmailAsync( string token, string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user is null) return false;
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if(!result.Succeeded) return false;
+            return true;
+
         }
     }
 }
