@@ -6,6 +6,7 @@ using KASHOP.DAL.Models;
 using KASHOP.DAL.Repository;
 using KASHOP.PL.Resources;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,7 @@ namespace KASHOP.PL.Controllers
         }
 
         [HttpPost("")]
+        [Authorize]
         public async Task<IActionResult> Create(CategoryRequest request)//list of translations
         {
             await _CategoryService.Create(request);
