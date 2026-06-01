@@ -2,6 +2,7 @@
 using KASHOP.DAL.dto.response;
 using KASHOP.DAL.Models;
 using Mapster;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -20,11 +21,13 @@ namespace KASHOP.BLL.Service
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly IConfiguration _configuration;
-        public AuthenticationService(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IConfiguration configuration)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public AuthenticationService(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)            
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
@@ -84,7 +87,7 @@ namespace KASHOP.BLL.Service
                 await _userManager.GenerateEmailConfirmationTokenAsync(user);
             token = Uri.EscapeDataString(token);
             var url =
-                $"http://localhost:5203/api/Account/confirmEmail?token={token}&id={user.Id}";
+                $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}/api/Account/confirmEmail?token={token}&id={user.Id}";
 
 
             await _emailSender.SendEmailAsync(

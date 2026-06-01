@@ -22,6 +22,7 @@ namespace KASHOP.PL
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
             // Add services to the container.
 
@@ -39,12 +40,23 @@ namespace KASHOP.PL
             }
 
                 );
+            /// Cors policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                  {
+                                      policy.AllowAnyOrigin()
+                                            .AllowAnyMethod()
+                                            .AllowAnyHeader();  
+                                  });
+            });
 
             //lang
 
             builder.Services.AddLocalization(options => options.ResourcesPath = "");
             const string defaultCulture = "en-GB";
-
+            
             var supportedCultures = new[]
             {
               new CultureInfo(defaultCulture),
@@ -126,6 +138,8 @@ namespace KASHOP.PL
 
 
             app.MapControllers();
+            app.UseCors(MyAllowSpecificOrigins);
+
 
             using ( var scope = app.Services.CreateScope()) { 
                 var services = scope.ServiceProvider;
