@@ -89,7 +89,15 @@ namespace KASHOP.PL
                 Options =>
                 {
                     Options.User.RequireUniqueEmail = true;
-                   
+                    ///password policy
+                    Options.Password.RequireDigit = true;  
+                    Options.Password.RequireLowercase = true;
+                    Options.Password.RequireUppercase = true;
+                    Options.Password.RequireNonAlphanumeric = true;
+                  //  Options.Password.RequiredLength = 10;
+                    //
+                    Options.Lockout.MaxFailedAccessAttempts = 5;
+                    Options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); 
                 }
 
                 )

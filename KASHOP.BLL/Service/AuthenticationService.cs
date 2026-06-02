@@ -14,6 +14,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace KASHOP.BLL.Service
 {
     public class AuthenticationService : IAuthenticationService
@@ -111,5 +112,116 @@ namespace KASHOP.BLL.Service
             return true;
 
         }
+
+        public  async Task<ForgetPasswordResponse> RequestResetPasswordAsync(ForgetPasswordRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user is null)
+            {
+                return new ForgetPasswordResponse()
+                {
+                    Success = false,
+                    Message = "invalid email"
+                };
+            }
+             
+                var random = new Random();
+                var code = random.Next(1000, 9999).ToString();
+                user.CodeResetPassword = code;
+                user.PasswordResetExpiration = DateTime.Now.AddMinutes(15);
+                await _userManager.UpdateAsync(user);
+            
+
+
+                await _emailSender.SendEmailAsync(
+                    user.Email,
+                    "Reset Password",
+                    $"<h1>Reset Password</h1>" +
+                    $"<p>Your reset code is: {code}</p>"
+                );
+                return new ForgetPasswordResponse()
+                {
+                    Success = true,
+                    Message = "Reset code sent to email"
+                };
+
+
+            }
+
+        public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordRequest request)
+        {
+
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user is null)
+            {
+                return new ResetPasswordResponse()
+                {
+                    Success = false,
+                    Message = "invalid email"
+                };
+            }
+            if (user.CodeResetPassword != request.Code)
+            {
+                return new ResetPasswordResponse()
+                {
+                    Success = false,
+                    Message = "invalid code"
+                };
+
+            }
+            if(user.PasswordResetExpiration < DateTime.UtcNow)
+            {
+                return new ResetPasswordResponse()
+                {
+                    Success = false,
+                    Message = "Reset code expired"
+                };
+            }
+var isSamePassword = await _userManager.CheckPasswordAsync(user, request.NewPassword);
+      if(isSamePassword)
+            {
+                return new ResetPasswordResponse()
+                {
+                    Success = false,
+                    Message = "the new password must be different from old password"
+                };
+
+            }
+
+           var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var result = await _userManager.ResetPasswordAsync(user, token, request.NewPassword);
+            if (!result.Succeeded)
+            {
+
+                foreach (var error in result.Errors)
+                {
+                    Console.WriteLine($"Code: {error.Code}");
+                    Console.WriteLine($"Description: {error.Description}");
+                }
+                return new ResetPasswordResponse()
+                {
+                    Success = false,
+                    Message = "Password reset failed"
+                };
+            }
+            await _emailSender.SendEmailAsync(
+                    user.Email,
+                    "Password Reset Successful",
+                    $"<h1>Password Reset Successful</h1>" +
+                    $"<p>Your password has been reset successfully.</p>"
+                );
+            return new ResetPasswordResponse()
+            {
+                Success = true,
+                Message = "Password reset successfully"
+            };
+
+
+
+
+
+        }
     }
-}
+    }
+
