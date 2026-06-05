@@ -47,6 +47,8 @@ namespace KASHOP.DAL.Data
 
                         entry.Property(e => e.CreatedById).CurrentValue = currentUserId;
                         entry.Property(e => e.CreatedOn).CurrentValue = DateTime.UtcNow;
+                       // entry.Property(e => e.CreatedBy).CurrentValue = currentUser;
+
 
 
                     }
@@ -54,6 +56,8 @@ namespace KASHOP.DAL.Data
                     {
                         entry.Property(e => e.UpdatedById).CurrentValue = currentUserId;
                         entry.Property(e => e.UpdatedOn).CurrentValue = DateTime.UtcNow;
+                     //  entry.Property(e => e.UpdatedBy).CurrentValue = currentUser;
+
                     }
                 }
             }

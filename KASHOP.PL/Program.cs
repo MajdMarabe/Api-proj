@@ -1,4 +1,5 @@
 
+using KASHOP.BLL.Mapping;
 using KASHOP.BLL.Service;
 using KASHOP.DAL.Data;
 using KASHOP.DAL.Models;
@@ -55,7 +56,7 @@ namespace KASHOP.PL
             //lang
 
             builder.Services.AddLocalization(options => options.ResourcesPath = "");
-            const string defaultCulture = "en-GB";
+            const string defaultCulture = "en";
             
             var supportedCultures = new[]
             {
@@ -128,6 +129,7 @@ namespace KASHOP.PL
 
             ////
             ///
+            MapsterConfig.MapsterConfigRegister();
             builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 

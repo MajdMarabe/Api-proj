@@ -79,7 +79,8 @@ namespace KASHOP.BLL.Service
                 return new RegisterResponse()
                 {
                     Success = false,
-                    Message = "Error"
+                    Message = "Error",
+                    Errors = result.Errors.Select(e => e.Description).ToList()
                 };
 
             await _userManager.AddToRoleAsync(user, "User");
