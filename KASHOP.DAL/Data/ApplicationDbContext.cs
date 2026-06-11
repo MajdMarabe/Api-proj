@@ -16,6 +16,13 @@ namespace KASHOP.DAL.Data
     {
         public DbSet<Category> categories {  get; set; }
         public DbSet<CategoryTranslation> CategoryTrnaslations {  get; set; }
+
+
+        public DbSet<Product> products { get; set; }
+        public DbSet<ProductTranslation> ProductTranslations { get; set; }
+
+
+
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor)
@@ -30,6 +37,31 @@ namespace KASHOP.DAL.Data
             builder.Entity<ApplicationUser>().ToTable("Users");
             builder.Entity<IdentityRole>().ToTable("Roles");
             builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
+
+            /////
+                 builder.Entity<Category>()
+                .HasOne(c => c.CreatedBy)
+                .WithMany()
+                .HasForeignKey(c => c.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Category>()
+                .HasOne(c => c.UpdatedBy)
+                .WithMany()
+                .HasForeignKey(c => c.UpdatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Product>()
+                .HasOne(p => p.CreatedBy)
+                .WithMany()
+                .HasForeignKey(p => p.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Product>()
+                .HasOne(p => p.UpdatedBy)
+                .WithMany()
+                .HasForeignKey(p => p.UpdatedById)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
 
@@ -47,7 +79,6 @@ namespace KASHOP.DAL.Data
 
                         entry.Property(e => e.CreatedById).CurrentValue = currentUserId;
                         entry.Property(e => e.CreatedOn).CurrentValue = DateTime.UtcNow;
-                       // entry.Property(e => e.CreatedBy).CurrentValue = currentUser;
 
 
 
@@ -56,7 +87,6 @@ namespace KASHOP.DAL.Data
                     {
                         entry.Property(e => e.UpdatedById).CurrentValue = currentUserId;
                         entry.Property(e => e.UpdatedOn).CurrentValue = DateTime.UtcNow;
-                     //  entry.Property(e => e.UpdatedBy).CurrentValue = currentUser;
 
                     }
                 }

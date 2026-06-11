@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace KASHOP.DAL.Repository
 {
-    public class GenericRepository<T> : IGenericRepositery <T> where T : class
+    public class GenericRepository<T> : IGenericRepository <T> where T : class
     {
         private readonly ApplicationDbContext _context;
         public GenericRepository(ApplicationDbContext context)

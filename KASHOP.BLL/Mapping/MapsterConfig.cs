@@ -16,11 +16,18 @@ namespace KASHOP.BLL.Mapping
         {
             TypeAdapterConfig<Category, CategoryResponse>.NewConfig()
                 .Map(dest => dest.Id, source => source.Id)
-                 .Map(dest => dest.CreatedBy, source => source.CreatedBy.UserName)
+                .Map(dest => dest.CreatedBy, source => source.CreatedBy.UserName)
 
                 .Map(dest => dest.Name, source => source.Translations.Where(t => t.Language == CultureInfo.CurrentCulture.Name)
+               .Select(t => t.Name).FirstOrDefault());
 
-                .Select(t => t.Name).FirstOrDefault());
+            TypeAdapterConfig<Product, ProductResponse>.NewConfig()
+                .Map(dest => dest.CreatedBy, source => source.CreatedBy.UserName)
+                .Map(dest => dest.Name, source => source.Translations.Where(t => t.Language == CultureInfo.CurrentCulture.Name)
+                .Select(t => t.Name).FirstOrDefault())
+                .Map(dest => dest.MainImage, source => $"http://localhost:5203/images/{source.MainImage}");
+
+
 
 
 

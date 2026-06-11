@@ -82,7 +82,11 @@ namespace KASHOP.PL
             //////
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ISeedData, RoleSeedData>();
+            //// product
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IProductService, ProductService>();
 
+            builder.Services.AddScoped<IFileService, FileService>();
 
 
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -146,7 +150,7 @@ namespace KASHOP.PL
 
             app.UseAuthorization();
 
-
+            app.UseStaticFiles();
             app.MapControllers();
             app.UseCors(MyAllowSpecificOrigins);
 

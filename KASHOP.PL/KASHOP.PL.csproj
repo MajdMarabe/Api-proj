@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -18,6 +18,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KASHOP.BLL\KASHOP.BLL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\18d3ce1e-6e85-46e5-a715-8b2989fed912.bmp" />
+    <None Include="wwwroot\images\2f91cf1c-3c25-46fa-a040-31e171b1540a.bmp" />
+    <None Include="wwwroot\images\40ff848c-394e-4941-a3b0-7f84223d6c15.bmp" />
+    <None Include="wwwroot\images\4be91d77-1a22-43f7-a39d-843666d150f6.bmp" />
+    <None Include="wwwroot\images\730b35bb-64c4-487e-a616-5a93c787e9a7.bmp" />
+    <None Include="wwwroot\images\bda9c0b0-d8d4-4255-a5a6-2c90c9e49712.bmp" />
+    <None Include="wwwroot\images\cb678b88-b602-43c4-8073-854750444035.bmp" />
+    <None Include="wwwroot\images\e396c747-320a-4f5f-a1c9-9b271b59b5a3.bmp" />
+    <None Include="wwwroot\images\e7498cb7-48a8-4bfb-9dc1-28a0c854c10d.bmp" />
   </ItemGroup>
 
 </Project>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace KASHOP.DAL.Repository
 {
-    public interface IGenericRepositery<T> where T : class
+    public interface IGenericRepository<T> where T : class
     {
         public Task<List<T>> GetAllAsync(string[]? includes = null);
         public Task<T> CreateAsync(T item);

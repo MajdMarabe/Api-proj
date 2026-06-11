@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace KASHOP.DAL.Repository
 {
-    public interface ICategoryRepository : IGenericRepository<Category>
+    public interface IProductRepository : IGenericRepository<Product>
     {
-        
     }
 }
