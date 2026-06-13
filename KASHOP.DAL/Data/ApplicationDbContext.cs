@@ -68,31 +68,30 @@ namespace KASHOP.DAL.Data
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             if(_httpContextAccessor.HttpContext != null)
+    {
+
+        var entries = ChangeTracker.Entries<AuditableEntity>();
+        var currentUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        foreach (var entry in entries)
+        {
+            if (entry.State == Microsoft.EntityFrameworkCore.EntityState.Added)
             {
 
-                var entries = ChangeTracker.Entries<AuditableEntity>();
-                var currentUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                foreach (var entry in entries)
-                {
-                    if (entry.State == EntityState.Added)
-                    {
-
-                        entry.Property(e => e.CreatedById).CurrentValue = currentUserId;
-                        entry.Property(e => e.CreatedOn).CurrentValue = DateTime.UtcNow;
+                entry.Property(e => e.CreatedById).CurrentValue = currentUserId;
+                entry.Property(e => e.CreatedOn).CurrentValue = DateTime.UtcNow;
 
 
 
-                    }
-                    else if (entry.State == EntityState.Modified)
-                    {
-                        entry.Property(e => e.UpdatedById).CurrentValue = currentUserId;
-                        entry.Property(e => e.UpdatedOn).CurrentValue = DateTime.UtcNow;
-
-                    }
-                }
             }
-            return base.SaveChangesAsync(cancellationToken);
-        }
+            else if (entry.State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+            {
+                entry.Property(e => e.UpdatedById).CurrentValue = currentUserId;
+                entry.Property(e => e.UpdatedOn).CurrentValue = DateTime.UtcNow;
 
+            }
+        }
+    }
+    return base.SaveChangesAsync(cancellationToken);
+}
     }
 }

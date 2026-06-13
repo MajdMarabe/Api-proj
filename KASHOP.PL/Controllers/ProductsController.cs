@@ -48,6 +48,25 @@ namespace KASHOP.PL.Controllers
             if (!deleted) return BadRequest();
             return Ok(new { message = "Product deleted successfully" });
         }
-    }
+
+        [HttpPatch("{id}")]
+        [Authorize]
+        public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request, int id)
+        {
+            var updated = await _productService.UpdateProduct(request, id);
+            if (!updated) return BadRequest();
+            return Ok(new { message = "Product updated successfully" });
+        }
+
+        [HttpPatch("{id}/status")]
+        [Authorize]
+        public async Task<IActionResult> ChangeStatuse(int id)
+        {
+            var updated = await _productService.ToggleStatuse(id);
+            if (!updated) return BadRequest();
+            return Ok(new { message = "status updated successfully" });
+        }
+
 
     }
+}

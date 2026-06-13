@@ -13,6 +13,8 @@ namespace KASHOP.DAL.dto.response
         public string Name { get; set; }
         public string MainImage { get; set; }
 
+        public decimal Price { get; set; }
+
 
     }
 }

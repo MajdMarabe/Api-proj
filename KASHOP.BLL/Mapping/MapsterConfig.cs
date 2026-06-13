@@ -1,4 +1,5 @@
-﻿using KASHOP.DAL.dto.response;
+﻿using KASHOP.DAL.dto.request;
+using KASHOP.DAL.dto.response;
 using KASHOP.DAL.Models;
 using Mapster;
 using System;
@@ -28,7 +29,9 @@ namespace KASHOP.BLL.Mapping
                 .Map(dest => dest.MainImage, source => $"http://localhost:5203/images/{source.MainImage}");
 
 
-
+            TypeAdapterConfig<ProductUpdateRequest, Product>
+             .NewConfig()
+             .IgnoreNullValues(true);
 
 
 
