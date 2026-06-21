@@ -75,6 +75,12 @@ namespace KASHOP.DAL.Repository
 
         }
 
+        public async Task<bool> DeleteRangeAsync(List<T> entities)
+        {
+            _context.RemoveRange(entities);
+            return await _context.SaveChangesAsync()>0;
+        }
+
         /* public async Task<T> GetByIdAsync(int id)
          {
             return  await _context.Set<T>().FindAsync(id);

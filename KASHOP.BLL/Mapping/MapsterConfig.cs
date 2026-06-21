@@ -34,6 +34,18 @@ namespace KASHOP.BLL.Mapping
              .IgnoreNullValues(true);
 
 
+            TypeAdapterConfig<Cart, AddToCartResponse>.NewConfig()
+                .Map(dest => dest.ProductName, source => source.Product.Translations.Where(t => t.Language == CultureInfo.CurrentCulture.Name)
+               .Select(t => t.Name).FirstOrDefault())
+                .Map(dest => dest.ProductImage, source => $"http://localhost:5203/images/{source.Product.MainImage}")
+                .Map(dest => dest.Price, source => source.Product.Price)
+                .Map(dest => dest.Count, source => source.count);
+
+
+
+
+
+
 
 
 

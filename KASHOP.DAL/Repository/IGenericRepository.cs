@@ -16,6 +16,9 @@ namespace KASHOP.DAL.Repository
         public Task<bool> DeleteAsync(T entity);
         public Task<bool> UpdateAsync(T entity);
 
+        public Task<bool> DeleteRangeAsync(List<T> entities);
+
+
 
     }
 }

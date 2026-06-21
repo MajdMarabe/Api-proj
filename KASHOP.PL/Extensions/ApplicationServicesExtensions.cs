@@ -23,6 +23,9 @@ namespace KASHOP.PL.Extensions
 
 
             Services.AddScoped<IAuthenticationService, AuthenticationService>();
+           Services.AddScoped<ICartRepository, CartRepository>();
+           Services.AddScoped<ICartService, CartService>();
+
             return Services;
         }
     }

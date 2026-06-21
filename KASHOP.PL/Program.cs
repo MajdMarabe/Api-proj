@@ -44,6 +44,10 @@ namespace KASHOP.PL
             //services
             builder.Services.AddApplicationServices();
 
+          
+
+
+
             // identity 
             builder.Services.AddIdentityServices();
 
