@@ -42,7 +42,7 @@ namespace KASHOP.PL
             //lang
             builder.Services.AddLocalizationServices();
             //services
-            builder.Services.AddApplicationServices();
+            builder.Services.AddApplicationServices(builder.Configuration);
 
           
 

@@ -1,0 +1,19 @@
+﻿using KASHOP.DAL.dto.request;
+using KASHOP.DAL.dto.response;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace KASHOP.BLL.Service
+{
+    public interface ICheckoutService
+    {
+        public Task<CheckoutResponse> ProcessCheckout(string userId, CheckoutRequest request);
+        public Task<CheckoutResponse> HandelSuccess(string sessionId);
+
+        
+
+    }
+}
