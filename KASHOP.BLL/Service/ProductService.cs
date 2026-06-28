@@ -1,4 +1,5 @@
-﻿using KASHOP.DAL.dto.request;
+﻿using KASHOP.BLL.Extensions;
+using KASHOP.DAL.dto.request;
 using KASHOP.DAL.dto.response;
 using KASHOP.DAL.Models;
 using KASHOP.DAL.Repository;
@@ -64,14 +65,24 @@ namespace KASHOP.BLL.Service
             return result;
         }
 
-        public async Task<List<ProductResponse>> GetAll()
+        public async Task<PaginationResponse<ProductResponse>> GetAll(PaginationRequest request)
         {
-            var products = await _productRepository.GetAllAsync(p=>p.Status==EntityState.Active,new string[] {  nameof(DAL.Models.Product.Translations),nameof(DAL.Models.Product.CreatedBy), "SubImages" });
-            return products.Adapt<List<ProductResponse>>();
+            var query =  _productRepository.GetQueryable(p=>p.Status==EntityState.Active,
+                new string[] {  nameof(DAL.Models.Product.Translations),nameof(DAL.Models.Product.CreatedBy), "SubImages" });
+
+            var paginated = await query.ToPaginationAsync(request.page, request.Limit);
+
+            return new PaginationResponse<ProductResponse>
+            {
+                Data = paginated.Data.Adapt<List<ProductResponse>>(),
+                TotalCount = paginated.TotalCount,
+                Page = paginated.Page,
+                Limit = paginated.Limit
+            };
 
 
         }
-        
+
         public async Task<ProductResponse?> GetProduct(Expression<Func<DAL.Models.Product, bool>> filter)
         {
             var product = await _productRepository.GetOne(filter, new string[] { nameof(DAL.Models.Product.Translations), nameof(DAL.Models.Product.CreatedBy) });

@@ -18,6 +18,8 @@ namespace KASHOP.DAL.Repository
 
         public Task<bool> DeleteRangeAsync(List<T> entities);
         public Task<bool> UpdateRangeAsync(List<T> entities);
+        public IQueryable<T> GetQueryable(Expression<Func<T, bool>> filter = null, string[]? includes = null);
+
 
 
 

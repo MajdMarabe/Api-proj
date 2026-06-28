@@ -11,7 +11,7 @@ namespace KASHOP.BLL.Service
     public interface IProductService
     {
         public Task<ProductResponse> Create(ProductRequest request);
-        public Task<List<ProductResponse>> GetAll();
+        public  Task<PaginationResponse<ProductResponse>> GetAll(PaginationRequest request);
         public Task<ProductResponse?> GetProduct(System.Linq.Expressions.Expression<Func<KASHOP.DAL.Models.Product, bool>> filter);
         public Task<bool> DeleteProduct(int id);
         public Task<bool> UpdateProduct(ProductUpdateRequest request, int id);
