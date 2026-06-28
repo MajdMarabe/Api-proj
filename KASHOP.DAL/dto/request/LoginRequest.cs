@@ -10,5 +10,7 @@ namespace KASHOP.DAL.dto.request
     {
         public String Email {  get; set; }
         public String Password { get; set; }
+
+ 
     }
 }

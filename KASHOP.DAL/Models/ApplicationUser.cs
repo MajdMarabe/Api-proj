@@ -17,5 +17,12 @@ namespace KASHOP.DAL.Models
         public DateTime? PasswordResetExpiration { get; set; }
 
 
+        /// Refresh token
+        public string ? RefreshToken { get; set; }
+        public DateTime ? RefreshTokenExpirty {  get; set; }
+
+       
+
+
     }
 }
