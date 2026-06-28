@@ -3,6 +3,7 @@ using KASHOP.DAL.dto.response;
 using KASHOP.DAL.Models;
 using KASHOP.DAL.Repository;
 using Mapster;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,39 +25,56 @@ namespace KASHOP.BLL.Service
         }
         public async Task<ProductResponse> Create(ProductRequest request)
         {
-            var product = request.Adapt<Product>();
+            var product = request.Adapt<DAL.Models.Product>();
+            product.SubImages.Clear();
             if (request.MainImage != null)
             {
                 var imageUrl = await _fileService.UploadFileAsync(request.MainImage);
                 product.MainImage = imageUrl;
             }
+            /////
+            if (request.SubImages != null) { 
+            foreach(var subImage in request.SubImages)
+                {
+                    var imageUrl = await _fileService.UploadFileAsync(subImage);
+                    product.SubImages.Add(new ProductImage
+                    {
+                        ImagePath =imageUrl
+                    });
+                }
+            }
+            ////
             var result = await _productRepository.CreateAsync(product);
-            return product.Adapt<ProductResponse>();
-            
-
+            return product.Adapt<ProductResponse>(); 
 
         }
 
         public async Task<bool> DeleteProduct(int id)
         {
-            var product = await _productRepository.GetOne(p => p.Id == id);
+            var product = await _productRepository.GetOne(p => p.Id == id,
+                new string[] {nameof(DAL.Models.Product.SubImages)});
             if (product == null) return false;
             _fileService.Delete(product.MainImage);     
+            foreach (var subImage in product.SubImages)
+            {
+                _fileService.Delete(subImage.ImagePath);
+
+            }
             var result = await _productRepository.DeleteAsync(product);
             return result;
         }
 
         public async Task<List<ProductResponse>> GetAll()
         {
-            var products = await _productRepository.GetAllAsync(p=>p.Status==EntityState.Active,new string[] {  nameof(Product.Translations),nameof(Product.CreatedBy) });
+            var products = await _productRepository.GetAllAsync(p=>p.Status==EntityState.Active,new string[] {  nameof(DAL.Models.Product.Translations),nameof(DAL.Models.Product.CreatedBy), "SubImages" });
             return products.Adapt<List<ProductResponse>>();
 
 
         }
         
-        public async Task<ProductResponse?> GetProduct(Expression<Func<Product, bool>> filter)
+        public async Task<ProductResponse?> GetProduct(Expression<Func<DAL.Models.Product, bool>> filter)
         {
-            var product = await _productRepository.GetOne(filter, new string[] { nameof(Product.Translations), nameof(Product.CreatedBy) });
+            var product = await _productRepository.GetOne(filter, new string[] { nameof(DAL.Models.Product.Translations), nameof(DAL.Models.Product.CreatedBy) });
             if (product == null)
                 return null;
             return product.Adapt<ProductResponse>();
@@ -64,17 +82,40 @@ namespace KASHOP.BLL.Service
 
         public async Task<bool> UpdateProduct(ProductUpdateRequest request, int id)
         {
-            var productdb = await _productRepository.GetOne(p => p.Id == id, new string[] { nameof(Product.Translations), nameof(Product.CreatedBy) });
+            var productdb = await _productRepository.GetOne(p => p.Id == id, new string[] { nameof(DAL.Models.Product.Translations),
+                nameof(DAL.Models.Product.CreatedBy),"SubImages" });
             if (productdb == null) return false;
-
-
             if (request.MainImage != null)
             { 
                 _fileService.Delete(productdb.MainImage);
                 var imageUrl = await _fileService.UploadFileAsync(request.MainImage);
                 productdb.MainImage = imageUrl;
             }
-            if(request.Translations != null)
+            if (request.SubImages != null)
+            {
+                foreach (var subimage in productdb.SubImages)
+                {
+                    _fileService.Delete(subimage.ImagePath);
+
+                }
+                productdb.SubImages.Clear();// clear the list
+
+
+                foreach (var subimage in request.SubImages)
+                {
+                    var imageUrl = await _fileService.UploadFileAsync(subimage);
+                    productdb.SubImages.Add(new ProductImage { ImagePath = imageUrl });                }
+            }
+            if (request.NewImges != null)
+            {
+
+                foreach (var NewImage in request.NewImges)
+                {
+                    var imageUrl = await _fileService.UploadFileAsync(NewImage);
+                    productdb.SubImages.Add(new ProductImage { ImagePath = imageUrl });
+                }
+            }
+            if (request.Translations != null)
             {
                 foreach (var translation in request.Translations)
                 {

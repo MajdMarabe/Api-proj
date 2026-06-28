@@ -24,6 +24,9 @@ namespace KASHOP.DAL.Models
         public Category Category { get; set; }
         //
         public List<ProductTranslation> Translations { get; set; }
+        // sub images
+        public List<ProductImage> SubImages { get; set; } = new List<ProductImage> ();
+    
 
     }
 }
