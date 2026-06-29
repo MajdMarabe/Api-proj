@@ -65,10 +65,26 @@ namespace KASHOP.BLL.Service
             return result;
         }
 
-        public async Task<PaginationResponse<ProductResponse>> GetAll(PaginationRequest request)
+        public async Task<PaginationResponse<ProductResponse>> GetAll(ProductFilterRequest request)
         {
             var query =  _productRepository.GetQueryable(p=>p.Status==EntityState.Active,
                 new string[] {  nameof(DAL.Models.Product.Translations),nameof(DAL.Models.Product.CreatedBy), "SubImages" });
+
+            if (request.Search != null) {
+                query = query.Where(p => p.Translations.Any(t => t.Name.Contains(request.Search)));
+            
+            }
+           if (request.CategoryId.HasValue)
+    query = query.Where(p => p.CategoryId == request.CategoryId);
+
+if (request.MinPrice.HasValue)
+    query = query.Where(p => p.Price >= request.MinPrice);
+
+if (request.MaxPrice.HasValue)
+    query = query.Where(p => p.Price <= request.MaxPrice);
+
+
+
 
             var paginated = await query.ToPaginationAsync(request.page, request.Limit);
 

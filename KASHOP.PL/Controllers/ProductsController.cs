@@ -26,7 +26,7 @@ namespace KASHOP.PL.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery]PaginationRequest request)
+        public async Task<IActionResult> Get([FromQuery] ProductFilterRequest request)
         {
             var result = await _productService.GetAll(request);
             return Ok(new { Products = result });
