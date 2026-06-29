@@ -27,6 +27,7 @@ namespace KASHOP.DAL.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
 
+        public DbSet<Review> Reviews { get; set; }
 
 
 
