@@ -51,6 +51,11 @@ namespace KASHOP.BLL.Mapping
                 .Map(dest => dest.Count, source => source.count);
 
 
+            TypeAdapterConfig<OrderItem, OrderItemResponse>.NewConfig()
+                .Map(dest => dest.ProductName, src => src.Product.Translations.FirstOrDefault().Name);
+            
+
+
 
 
 
