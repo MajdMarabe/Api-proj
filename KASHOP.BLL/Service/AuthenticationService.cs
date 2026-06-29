@@ -42,6 +42,9 @@ namespace KASHOP.BLL.Service
             ////
             var result = await _userManager.CheckPasswordAsync(user, request.Password);
             if (!result) return new LoginResponse() { Success = false, Message = "invalid Password" };
+            //check block
+            if(await _userManager.IsLockedOutAsync(user)) return new LoginResponse() { Success = false, Message = "account is blocked" };
+
             var refreshToken = await  GenerateRefreshToken(user);
             SetRefreshTokenCookies(refreshToken);
 

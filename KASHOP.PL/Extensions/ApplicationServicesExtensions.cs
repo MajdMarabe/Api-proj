@@ -29,6 +29,8 @@ namespace KASHOP.PL.Extensions
            Services.AddScoped<ICartRepository, CartRepository>();
            Services.AddScoped<ICartService, CartService>();
             Services.AddScoped<IOrderService, OrderService>();
+            Services.AddScoped<IUserManagementService, UserManagementService>();
+
             //// stripe
             Services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
             StripeConfiguration.ApiKey = Configuration["Stripe:SecretKey"];
