@@ -6,6 +6,7 @@ using KASHOP.DAL.Models;
 using KASHOP.DAL.Repository;
 using KASHOP.DAL.utils;
 using KASHOP.PL.Extensions;
+using KASHOP.PL.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -59,12 +60,18 @@ namespace KASHOP.PL
 
             //////
             var app = builder.Build();
+
             app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
             }
+            /////
+            ///
+            app.UseMiddleware<GlobalExceptionHanadling>();
+            app.UseCustomMiddleware();
+
 
             app.UseHttpsRedirection();
 
@@ -72,6 +79,9 @@ namespace KASHOP.PL
 
             app.UseStaticFiles();
             app.MapControllers();
+
+          
+
             app.UseCors(CorsPolicyExtensions.MyAllowSpecificOrigins);
 
 
@@ -85,7 +95,7 @@ namespace KASHOP.PL
                 }
             
             }
-
+            
             app.Run();
         }
     }
